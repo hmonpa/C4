@@ -66,7 +66,6 @@ public class Juga2 extends javax.swing.JFrame {
         Xmax = mides.getWidth();
         Step = (int) Xmax / 8;
     }
-
     /**
      * @param args the command line arguments
      */
@@ -99,6 +98,7 @@ public class Juga2 extends javax.swing.JFrame {
         //Jugador p1 = new Aleatori();
 
         Jugador p2 = new Manual();
+
         //Jugador p2 = new Manual();
 
         boolean autoMode = true;
