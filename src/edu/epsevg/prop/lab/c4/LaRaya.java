@@ -1,5 +1,6 @@
 package edu.epsevg.prop.lab.c4;
 import edu.epsevg.prop.lab.c4.Juga2;
+import java.util.ArrayList;
         
 /**
  * @author hector
@@ -15,12 +16,32 @@ public class LaRaya implements Jugador, IAuto {
   
   public int moviment(Tauler t, int color)
   {
-      return
+      return inici_minmax(t,8,color);
   }
   
   public String nom()
   {
     return nom;
+  }
+  
+  private int inici_minmax(Tauler estat,int depth, int player){
+      int LNfirst[] = new int[estat.getMida()];
+      for(int i = 0; i < estat.getMida(); ++i){
+         if(estat.movpossible(i)){
+             Tauler estat2 = new Tauler(estat);
+             estat2.afegeix(i, player); 
+             LNfirst[i] = min(estat2, depth-1, player, 0, 0, estat2.solucio(i, player));
+         }
+      }
+      int max = LNfirst[1];
+      int fila = 0;
+      for(int i = 1; i < estat.getMida(); ++i){
+          if (max < LNfirst[i]){
+               max = LNfirst[i];
+               fila = i;
+          }
+      }
+      return fila;
   }
   // player es el color
   private int max(Tauler estat, int depth, int player, int alpha, int beta, boolean solucio){
@@ -61,12 +82,14 @@ public class LaRaya implements Jugador, IAuto {
                   solucio = true;
               }
               valor = max(estat2, depth-1, player, alpha, beta,solucio);    // pdte implementar min
-              alpha = Math.max(alpha, valor);
+              beta = Math.min(beta, valor);
               if (beta <= alpha) return valor;
           }
       }
       return valor;
   }
- 
+  private int heuristica_c4(Tauler estat, int player){
+      
+  }
   
 }
