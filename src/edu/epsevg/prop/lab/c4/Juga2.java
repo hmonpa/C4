@@ -97,7 +97,7 @@ public class Juga2 extends javax.swing.JFrame {
         Jugador p1 = new Profe(8,false);
         //Jugador p1 = new Aleatori();
 
-        Jugador p2 = new Manual();
+        Jugador p2 = new LaRaya();
 
         //Jugador p2 = new Manual();
 
