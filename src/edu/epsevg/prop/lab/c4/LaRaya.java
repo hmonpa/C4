@@ -1,13 +1,13 @@
 package edu.epsevg.prop.lab.c4;
 import edu.epsevg.prop.lab.c4.Juga2;
-import java.util.ArrayList;
         
 /**
- * @author hector
+ * @author hector, alberto
  */
 
 public class LaRaya implements Jugador, IAuto {
   private String nom;
+  private int depth;
   
   public LaRaya()
   {
@@ -25,23 +25,27 @@ public class LaRaya implements Jugador, IAuto {
   }
   
   private int inici_minmax(Tauler estat,int depth, int player){
-      int LNfirst[] = new int[estat.getMida()];
+      //int LNfirst[] = new int[estat.getMida()];
+      int valor, fila = 0;
+      int max = Integer.MIN_VALUE;
       for(int i = 0; i < estat.getMida(); ++i){
          if(estat.movpossible(i)){
              Tauler estat2 = new Tauler(estat);
              estat2.afegeix(i, player); 
-             LNfirst[i] = min(estat2, depth-1, player, 0, 0, estat2.solucio(i, player));
+             valor = min(estat2, depth-1, player, Integer.MAX_VALUE, Integer.MIN_VALUE, estat2.solucio(i, player));
+              if (max < valor){
+               max = valor;
+               fila = i;
+              }
          }
       }
       
-      int max = LNfirst[1];
+      /*int max = LNfirst[0];
       int fila = 0;
       for(int i = 1; i < estat.getMida(); ++i){
-          if (max < LNfirst[i]){
-               max = LNfirst[i];
-               fila = i;
-          }
-      }
+          System.out.println("------> "+LNfirst[i]);
+         
+      }*/
       return fila;
   }
   // player es el color
@@ -50,9 +54,9 @@ public class LaRaya implements Jugador, IAuto {
       if (solucio || depth == 0){
           return heuristica(estat, player);
       }
-      int valor = -1000000000;
+      int valor = Integer.MIN_VALUE;
       solucio = false;
-      if(depth==7)System.out.println("Max >"+depth);
+      //if(depth==7)System.out.println("Max >"+depth);
       for (int i=0;i<estat.getMida();i++){    
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
@@ -74,9 +78,9 @@ public class LaRaya implements Jugador, IAuto {
       if (solucio || depth == 0){
           return heuristica(estat, player);
       }
-      int valor = 1000000000;
+      int valor = Integer.MAX_VALUE;
       solucio = false;
-      if(depth==7)System.out.println("Min >"+depth);
+      //if(depth==7)System.out.println("Min >"+depth);
       for (int i=0;i<estat.getMida();i++){
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
