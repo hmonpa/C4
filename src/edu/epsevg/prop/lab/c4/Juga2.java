@@ -97,12 +97,12 @@ public class Juga2 extends javax.swing.JFrame {
         Jugador p1 = new Profe(8,false);
         //Jugador p1 = new Aleatori();
 
-        Jugador p2 = new LaRaya();
+        Jugador best = new LaRaya();
 
         //Jugador p2 = new Manual();
 
         boolean autoMode = true;
-        final Juga2 j = new Juga2(p1, p2, autoMode);
+        final Juga2 j = new Juga2(p1, best, autoMode);
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -384,6 +384,7 @@ public class Juga2 extends javax.swing.JFrame {
     @Override
     public void paint(Graphics g1) {
         super.paint(g1);
+        System.out.println(">Jugada explorada");
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // Anti-alias!
         RenderingHints.VALUE_ANTIALIAS_ON);

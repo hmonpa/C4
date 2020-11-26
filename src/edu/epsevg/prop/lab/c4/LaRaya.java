@@ -2,7 +2,12 @@ package edu.epsevg.prop.lab.c4;
 import edu.epsevg.prop.lab.c4.Juga2;
         
 /**
+<<<<<<< HEAD
  * @author hector, alberto
+=======
+ * @author Héctor Montesinos
+ * @author Alberto López Rey
+>>>>>>> 73db0fdc2311defdbc1077eb113bf8a67405e036
  */
 
 public class LaRaya implements Jugador, IAuto {
@@ -12,11 +17,13 @@ public class LaRaya implements Jugador, IAuto {
   public LaRaya()
   {
     nom = "La Raya";
+    depth = 8;
   }
   
   public int moviment(Tauler t, int color)
   {
-      return inici_minmax(t,8,color);
+      //return inici_minmax(t,8,color);
+      return inici_minmax(t,color);
   }
   
   public String nom()
@@ -24,14 +31,25 @@ public class LaRaya implements Jugador, IAuto {
     return nom;
   }
   
+<<<<<<< HEAD
   private int inici_minmax(Tauler estat,int depth, int player){
+=======
+  public LaRaya(int depth){
+      this.nom = "La Raya";
+      this.depth = depth;
+  }
+  
+//  private int inici_minmax(Tauler estat,int depth, int player){
+    private int inici_minmax(Tauler estat,int player){
+>>>>>>> 73db0fdc2311defdbc1077eb113bf8a67405e036
       //int LNfirst[] = new int[estat.getMida()];
       int valor, fila = 0;
       int max = Integer.MIN_VALUE;
       for(int i = 0; i < estat.getMida(); ++i){
+         Tauler estat2 = new Tauler(estat);
          if(estat.movpossible(i)){
-             Tauler estat2 = new Tauler(estat);
              estat2.afegeix(i, player); 
+<<<<<<< HEAD
              valor = min(estat2, depth-1, player, Integer.MAX_VALUE, Integer.MIN_VALUE, estat2.solucio(i, player));
               if (max < valor){
                max = valor;
@@ -46,77 +64,129 @@ public class LaRaya implements Jugador, IAuto {
           System.out.println("------> "+LNfirst[i]);
          
       }*/
+=======
+             //LNfirst[i] = min(estat2, depth-1, player, 0, 0, estat2.solucio(i, player));
+             valor = min(estat2, depth, player, Integer.MAX_VALUE, Integer.MIN_VALUE);
+             System.out.println("Columna " + i + " valor = " + valor);
+               if (valor > max){
+                    //max = LNfirst[i];
+                    max = valor;
+                    fila = i;
+                }
+         }
+      }
+      
+      //int max = LNfirst[1];
+      //int fila = 0;
+      /*for(int i = 1; i < estat.getMida(); ++i){
+          //if (max < LNfirst[i]){
+          if (valor > max){
+               //max = LNfirst[i];
+               max = valor;
+               fila = i;
+          }
+      }*/
+      //System.out.println(fila);
+>>>>>>> 73db0fdc2311defdbc1077eb113bf8a67405e036
       return fila;
   }
   // player es el color
-  private int max(Tauler estat, int depth, int player, int alpha, int beta, boolean solucio){
+  //private int max(Tauler estat, int depth, int player, int alpha, int beta, boolean solucio){
+  private int max(Tauler estat, int depth, int player, int alpha, int beta){
       // Max
-      if (solucio || depth == 0){
-          return heuristica(estat, player);
+      //if (solucio || depth == 0){
+      if (!estat.espotmoure() || depth == 0){
+          //return heuristica(estat, player);
+          alpha = this.heuristica(estat, player);
       }
+<<<<<<< HEAD
       int valor = Integer.MIN_VALUE;
       solucio = false;
+=======
+      else{
+      //int valor = -1000000000;
+      //solucio = false;
+>>>>>>> 73db0fdc2311defdbc1077eb113bf8a67405e036
       //if(depth==7)System.out.println("Max >"+depth);
       for (int i=0;i<estat.getMida();i++){    
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
               estat2.afegeix(i, player);        // player pendiente de asegurar implementación
               if (estat2.solucio(i, player)){   // player pendiente de asegurar implementación
-                  solucio = true;
+                  //solucio = true;
+                  return Integer.MAX_VALUE;
               }
-              valor = min(estat2, depth-1, player, alpha, beta, solucio);    // pdte implementar min
+              //valor = min(estat2, depth-1, player, alpha, beta, solucio);    // pdte implementar min
+              int valor = min(estat2, depth-1, player, alpha, beta);    // pdte implementar min
+              //System.out.println("MAX: Columna " + i + " valor = " + valor);
               alpha = Math.max(alpha, valor);
-              if (beta <= alpha) return valor;
+              //if (beta <= alpha) return valor;
+              if (beta <= alpha) return alpha;
           }
       }
-      return valor;
+      }
+      //return valor;
+      return alpha;
   }
   
     // player es el color
-  private int min(Tauler estat, int depth, int player, int alpha, int beta,boolean solucio){
+  private int min(Tauler estat, int depth, int player, int alpha, int beta){
       // Min
-      if (solucio || depth == 0){
-          return heuristica(estat, player);
+      //if (solucio || depth == 0){
+      if (!estat.espotmoure() || depth == 0){
+          //return heuristica(estat, player);
+          beta = heuristica(estat, player);
       }
+<<<<<<< HEAD
       int valor = Integer.MAX_VALUE;
       solucio = false;
+=======
+      else{
+      //int valor = 1000000000;
+      //solucio = false;
+>>>>>>> 73db0fdc2311defdbc1077eb113bf8a67405e036
       //if(depth==7)System.out.println("Min >"+depth);
       for (int i=0;i<estat.getMida();i++){
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
-              estat2.afegeix(i, player);        // player pendiente de asegurar implementación
-              if (estat2.solucio(i, player)){   // player pendiente de asegurar implementación
-                  solucio = true;
+              estat2.afegeix(i, player);        
+              if (estat2.solucio(i, player)){  
+                  //solucio = true;
+                  return Integer.MIN_VALUE;
               }
-              valor = max(estat2, depth-1, player, alpha, beta,solucio);    // pdte implementar min
+              //valor = max(estat2, depth-1, player, alpha, beta,solucio);    // pdte implementar min
+              int valor = max(estat2, depth-1, player, alpha, beta); 
+              //System.out.println("MIN: " + i + " valor = " + valor);
               beta = Math.min(beta, valor);
-              if (beta <= alpha) return valor;
+              //if (beta <= alpha) return valor;
+              if (beta <= alpha) return beta;
           }
       }
-      return valor;
+      }
+      //return valor;
+      return beta;
   }
   
     private int heuristica (Tauler t, int color){
     float heu = 0.0f;
-    int colmax= (int)(t.getMida());
     int num=0;
-    for (int fila=0; fila<colmax; ++fila) {
+    for (int i=0;i<t.getMida();i++){
       //LLAMAR A LA VERTICAL Y USAR LA FILA COMO SI FUERA UNA COLUMNA
-        heu=HeuristicaRecorregutVertical(t, fila,color,heu);
-        for (int col = 0; col <colmax; ++col) {
+        //heu=HeuristicaRecorregutVertical(t, fila,color,heu);
+        for (int col = 0; col <t.getMida(); ++col) {
           //Per cada posició ens interessa mirar totes les possiblitats, amunt, avall, dreta, esquerra i les 4 diagonals
-          num=Recorregut(t, fila, col, t.getColor(fila, col), "DiagonalEsquerreAvall");
-          heu=calculaheuristica(t, heu, num, fila, col, color);
-          num=Recorregut(t, fila, col, t.getColor(fila, col), "DiagonalEsquerreAmunt");
-          heu=calculaheuristica(t, heu, num, fila, col, color);
-          num=Recorregut(t, fila, col, t.getColor(fila, col), "DiagonalDretaAvall");
-          heu=calculaheuristica(t, heu, num, fila, col, color);
-          num=Recorregut(t, fila, col, t.getColor(fila, col), "DiagonalDretaAmunt");
-          heu=calculaheuristica(t, heu, num, fila, col, color);
-          num=Recorregut(t, fila, col, t.getColor(fila, col), "HoritzonalEsquerra");
-          heu=calculaheuristica(t, heu, num, fila, col, color);
-          num=Recorregut(t, fila, col, t.getColor(fila, col), "HoritzonalDreta");
-          heu=calculaheuristica(t, heu, num, fila, col, color);
+          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalEsquerreAvall");
+          heu=calculaheuristica(t, heu, num, i, col, color);
+          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalEsquerreAmunt");
+          heu=calculaheuristica(t, heu, num, i, col, color);
+          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalDretaAvall");
+          heu=calculaheuristica(t, heu, num, i, col, color);
+          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalDretaAmunt");
+          heu=calculaheuristica(t, heu, num, i, col, color);
+          num=Recorregut(t, i, col, t.getColor(i, col), "HoritzonalEsquerra");
+          heu=calculaheuristica(t, heu, num, i, col, color);
+          num=Recorregut(t, i, col, t.getColor(i, col), "HoritzonalDreta");
+          heu=calculaheuristica(t, heu, num, i, col, color);
         }
     }
     return (int)heu;
@@ -127,7 +197,7 @@ public class LaRaya implements Jugador, IAuto {
     //Si el color es el de l'enemic serà -1 i per tant al ser un número negatiu es restarà a la heuristica
     //Formula=2nostres+20*3nostres+1000*4nostres - (2seves+20*3seves+1000*4seves)
     if (quantesnostres == 2) {
-        heuactual = heuactual + 300*t.getColor(fila, col) * color;
+        heuactual = heuactual + 10 * t.getColor(fila, col) * color;
     }
     else if (quantesnostres == 3) {
         heuactual = heuactual + 500 * t.getColor(fila, col) * color;
