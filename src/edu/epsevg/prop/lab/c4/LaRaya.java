@@ -9,6 +9,7 @@ import static java.lang.Math.abs;
 public class LaRaya implements Jugador, IAuto {
   private String nom;
   private int depth;
+  int cont = 0;
   
   public LaRaya(int depth)
   {
@@ -19,7 +20,7 @@ public class LaRaya implements Jugador, IAuto {
   @Override
   public int moviment(Tauler t, int color)
   {
-      return inici_minmax(t, depth, color);   
+      return inici_minmax(t, depth, color, cont);   
   }
   
   public String nom()
@@ -27,7 +28,7 @@ public class LaRaya implements Jugador, IAuto {
     return nom;
   }
   
-  private int inici_minmax(Tauler estat, int depth, int player){
+  private int inici_minmax(Tauler estat, int depth, int player, int cont){
       int valor, col = 0;
       int max = Integer.MIN_VALUE;
       for(int i = 0; i < estat.getMida(); ++i){
@@ -35,8 +36,10 @@ public class LaRaya implements Jugador, IAuto {
              Tauler estat2 = new Tauler(estat);
              estat2.afegeix(i, player); 
              //System.out.println("=========>pintar_first"+i);
-             //estat2.pintaTaulerALaConsola();
-             //System.out.println("-----------------");
+             System.out.println("Exploració " + cont);
+             cont++;
+             estat2.pintaTaulerALaConsola();
+             System.out.println("-----------------");
              valor = min(estat2, depth-1, -player, Integer.MIN_VALUE, Integer.MAX_VALUE, estat2.solucio(i, player));
              //System.out.println("Columna >" + i + " valor heurístic: "+valor);
              if (max < valor){
@@ -49,10 +52,12 @@ public class LaRaya implements Jugador, IAuto {
              }
          }
       }
-      //System.out.println("Ficha nº " + contabs + " colocada");
+      System.out.println("Jugadas exploradas en este iteración " + cont);
+      
       if(max > 214000000) System.out.println("Columna: " + col + "; Valor heuristic ∞");
       else if (max < -214000000) System.out.println("Columna: " + col + "; Valor heuristic -∞");
       else System.out.println("Columna: " + col + "; Valor heuristic " + max);
+      //System.out.println(col);
       return col;
   }
 
@@ -64,7 +69,6 @@ public class LaRaya implements Jugador, IAuto {
           return heuristica(estat, player);
       }
       int valor = Integer.MIN_VALUE;
-      //if(depth==7)System.out.println("Max >"+depth);
       for (int i=0;i<estat.getMida();i++){    
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
@@ -87,7 +91,6 @@ public class LaRaya implements Jugador, IAuto {
           return heuristica(estat, -player);
       }
       int valor = Integer.MAX_VALUE;
-      //if(depth==7)System.out.println("Min >"+depth);
       for (int i=0;i<estat.getMida();i++){
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
@@ -218,17 +221,17 @@ public class LaRaya implements Jugador, IAuto {
   }
   private int num_heuristic(int num, int color,int color_comp,int heu_actual,int X){
       
-      if (X == 0) X = 1;
+      /*if (X == 0) X = 1;
       if (X == 1) X = 2;
       if (X == 2) X = 3;
       if (X == 3) X = 4;
       if (X == 4) X = 4;
       if (X == 5) X = 3;
       if (X == 6) X = 2;
-      if (X == 7) X = 1;
+      if (X == 7) X = 1;*/
 
       if (num == 1){
-          heu_actual += heu_actual + 100 *(color * color_comp);
+          heu_actual += heu_actual + 300 *(color * color_comp);
       }
       if (num == 2){
           heu_actual += heu_actual + 500 *(color * color_comp);
