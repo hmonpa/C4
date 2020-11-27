@@ -1,5 +1,6 @@
 package edu.epsevg.prop.lab.c4;
 import edu.epsevg.prop.lab.c4.Juga2;
+import static java.lang.Math.abs;
         
 /**
  * @author hector, alberto
@@ -30,42 +31,41 @@ public class LaRaya implements Jugador, IAuto {
          if(estat.movpossible(i)){
              Tauler estat2 = new Tauler(estat);
              estat2.afegeix(i, player); 
-             valor = min(estat2, depth-1, -player, Integer.MAX_VALUE, Integer.MIN_VALUE, estat2.solucio(i, player));
-             //if(i==0) System.out.println("columna " + i + " valor =" + valor);
-              if (max < valor){
+             //System.out.println("=========>pintar_first"+i);
+             //estat2.pintaTaulerALaConsola();
+             valor = min(estat2, depth-1, -player, Integer.MIN_VALUE, Integer.MAX_VALUE, estat2.solucio(i, player));
+             System.out.println("+++++>"+valor);
+             if (max < valor){
                max = valor;
                fila = i;
-              }
+             }else if(max == valor){
+                if (abs(fila-3) > abs(i-3)){
+                    fila = i;
+                }
+             }
          }
       }
-      
-      /*int max = LNfirst[0];
-      int fila = 0;
-      for(int i = 1; i < estat.getMida(); ++i){
-          System.out.println("------> "+LNfirst[i]);
-         
-      }*/
+      System.out.println("=>"+fila+"=>"+max);
       return fila;
   }
   // player es el color
   private int max(Tauler estat, int depth, int player, int alpha, int beta, boolean solucio){
       // Max
-      if (solucio){
+       if (solucio){
+          // System.out.println("papaaaaa ouuuuuu");
           return Integer.MIN_VALUE;
       }if(depth == 0){
           return heuristica(estat, player);
       }
       int valor = Integer.MIN_VALUE;
-      solucio = false;
       //if(depth==7)System.out.println("Max >"+depth);
       for (int i=0;i<estat.getMida();i++){    
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
-              estat2.afegeix(i, player);        // player pendiente de asegurar implementación
-              if (estat2.solucio(i, player)){   // player pendiente de asegurar implementación
-                  solucio = true;
-              }
-              valor = min(estat2, depth-1, -player, alpha, beta, solucio);    // pdte implementar min
+              estat2.afegeix(i, player);
+              //System.out.println("=========>pintar_max"+i);
+              //estat2.pintaTaulerALaConsola();// player pendiente de asegurar implementación
+              valor = min(estat2, depth-1, -player, alpha, beta, estat2.solucio(i, player));    // pdte implementar min
               alpha = Math.max(alpha, valor);
               if (beta <= alpha) return valor;
           }
@@ -79,19 +79,17 @@ public class LaRaya implements Jugador, IAuto {
       if (solucio){
           return Integer.MAX_VALUE;
       }if(depth == 0){
-          return heuristica(estat, player);
+          return heuristica(estat, -player);
       }
       int valor = Integer.MAX_VALUE;
-      solucio = false;
       //if(depth==7)System.out.println("Min >"+depth);
       for (int i=0;i<estat.getMida();i++){
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
-              estat2.afegeix(i, player);        // player pendiente de asegurar implementación
-              if (estat2.solucio(i, player)){   // player pendiente de asegurar implementación
-                  solucio = true;
-              }
-              valor = max(estat2, depth-1, -player, alpha, beta,solucio);    // pdte implementar min
+              estat2.afegeix(i, player); 
+              //System.out.println("=========>pintar_min"+i);
+              //estat2.pintaTaulerALaConsola();// player pendiente de asegurar implementación
+              valor = max(estat2, depth-1, -player, alpha, beta,estat2.solucio(i, player));    // pdte implementar min
               beta = Math.min(beta, valor);
               if (beta <= alpha) return valor;
           }
@@ -99,136 +97,140 @@ public class LaRaya implements Jugador, IAuto {
       return valor;
   }
   
-   private int heuristica (Tauler t, int color){
-    float heu = 0.0f;
+  private int heuristica (Tauler t, int color){
+    int heu_laraya = 0;
+    int heu_enemic = 0;
     int num=0;
     for (int i=0;i<t.getMida();i++){
-      //LLAMAR A LA VERTICAL Y USAR LA FILA COMO SI FUERA UNA COLUMNA
-        //heu=HeuristicaRecorregutVertical(t, fila,color,heu);
         for (int col = 0; col <t.getMida(); ++col) {
-          //Per cada posició ens interessa mirar totes les possiblitats, amunt, avall, dreta, esquerra i les 4 diagonals
-          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalEsquerreAvall");
-          heu=calculaheuristica(t, heu, num, i, col, color);
-          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalEsquerreAmunt");
-          heu=calculaheuristica(t, heu, num, i, col, color);
-          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalDretaAvall");
-          heu=calculaheuristica(t, heu, num, i, col, color);
-          num=Recorregut(t, i, col, t.getColor(i, col), "DiagonalDretaAmunt");
-          heu=calculaheuristica(t, heu, num, i, col, color);
-          num=Recorregut(t, i, col, t.getColor(i, col), "HoritzonalEsquerra");
-          heu=calculaheuristica(t, heu, num, i, col, color);
-          num=Recorregut(t, i, col, t.getColor(i, col), "HoritzonalDreta");
-          heu=calculaheuristica(t, heu, num, i, col, color);
+            if (t.getColor(i, col) == color){
+                num = recorre(t,color,i,col);
+                heu_laraya = num_heuristic(num,color,color,heu_laraya,i);
+            }
+            else if(t.getColor(i, col) == -color){
+                 num = recorre(t,-color,i,col);
+                 heu_enemic = num_heuristic(num,-color,color,heu_enemic,i);
+            
+            }
         }
+                    
     }
-    return (int)heu;
+    return heu_laraya - heu_enemic;
   }
-
-  private float calculaheuristica (Tauler t, float heuactual, int quantesnostres, int fila, int col, int color){
-    //Si el color es el nostre serà 1 pel que serà positiu i se sumarà a la heuristicaactua
-    //Si el color es el de l'enemic serà -1 i per tant al ser un número negatiu es restarà a la heuristica
-    //Formula=2nostres+20*3nostres+1000*4nostres - (2seves+20*3seves+1000*4seves)
-    if (quantesnostres == 2) {
-        heuactual = heuactual + 10 * t.getColor(fila, col) * color;
-    }
-    else if (quantesnostres == 3) {
-        heuactual = heuactual + 500 * t.getColor(fila, col) * color;
-    }
-    else if (quantesnostres >= 4) {
-        heuactual = heuactual + 100000 * t.getColor(fila, col) * color;
-    }
-    return heuactual;
+  private int recorre(Tauler t, int color, int X,int Y){
+      int seguides_h = 1;
+      int seguides_v = 1;
+      int seguides_dc = 1;
+      int seguides_dd = 1;
+ //---------------HORIZONTAL-------------------
+      if (X-1 != -1){
+          if(t.getColor(X-1, Y) == color){
+              ++seguides_h;
+              if (X-2 != -1){
+                    if(t.getColor(X-2, Y) == color){
+                        ++seguides_h;
+                    } 
+               }
+          }
+      }
+      if (X+1 != t.getMida()){
+          if(t.getColor(X+1, Y) == color){
+              ++seguides_h;
+              if (X+2 != t.getMida()){
+                    if(t.getColor(X+2, Y) == color){
+                        ++seguides_h;
+                    } 
+               }
+          }
+      }
+ //---------------VERTICAL-----------------------
+      if (Y-1 != -1){
+          if(t.getColor(X, Y-1) == color){
+              ++seguides_v;
+              if (Y-2 != -1){
+                    if(t.getColor(X, Y-2) == color){
+                        ++seguides_v;
+                    } 
+               }
+          }
+      }
+      if (Y+1 != t.getMida()){
+          if(t.getColor(X, Y+1) == color){
+              ++seguides_v;
+              if (Y+2 != t.getMida()){
+                    if(t.getColor(X, Y+2) == color){
+                        ++seguides_v;
+                    } 
+               }
+          }
+      }
+ //-----------------DIAGONAL_CREIXENT------------------------------
+       if (X-1 != -1 && Y-1 != -1){
+          if(t.getColor(X-1, Y-1) == color){
+              ++seguides_dc;
+              if (X-2 != -1 && Y-2 != -1){
+                    if(t.getColor(X-2, Y-2) == color){
+                        ++seguides_dc;
+                    } 
+               }
+          }
+      }
+      if (X+1 != t.getMida() && Y+1 != t.getMida()){
+          if(t.getColor(X+1, Y+1) == color){
+              ++seguides_dc;
+              if (X+2 != t.getMida() && Y+2 != t.getMida()){
+                    if(t.getColor(X+2, Y+2) == color){
+                        ++seguides_dc;
+                    } 
+               }
+          }
+      }
+//--------------------DIAGONAL_DECREIXENT--------------------------
+       if (X-1 != -1 && Y+1 != t.getMida()){
+          if(t.getColor(X-1, Y+1) == color){
+              ++seguides_dd;
+              if (X-2 != -1 && Y+2 != t.getMida()){
+                    if(t.getColor(X-2, Y+2) == color){
+                        ++seguides_dd;
+                    } 
+               }
+          }
+      }
+      if (X+1 != t.getMida() && Y-1 != -1){
+          if(t.getColor(X+1, Y-1) == color){
+              ++seguides_dd;
+              if (X+2 != t.getMida() && Y-2 != -1){
+                    if(t.getColor(X+2, Y-2) == color){
+                        ++seguides_dd;
+                    } 
+               }
+          }
+      }
+    int max = Integer.max(seguides_h,seguides_v);
+    max = Integer.max(max,seguides_dc);
+    return Integer.max(max,seguides_dd);
   }
+  private int num_heuristic(int num, int color,int color_comp,int heu_actual,int X){
+      int heu = 0;
+      
+      if (X == 0) X = 1;
+      if (X == 1) X = 2;
+      if (X == 2) X = 3;
+      if (X == 3) X = 4;
+      if (X == 4) X = 4;
+      if (X == 5) X = 3;
+      if (X == 6) X = 2;
+      if (X == 7) X = 1;
 
-  private int Recorregut(Tauler t, int f, int c, int color, String TipusMoviment) {
-      int colmax= (int)(t.getMida());
-      int nostres = 0;
-      int contador = 0;
-      int col = c;
-      int fila = f;
-      boolean target = false;
-      String DiagonalEsquerreAvall ="DiagonalEsquerreAvall";
-      String DiagonalEsquerreAmunt ="DiagonalEsquerreAmunt";
-      String DiagonalDretaAvall ="DiagonalDretaAvall";
-      String DiagonalDretaAmunt ="DiagonalDretaAmunt";
-      String HoritzonalEsquerra ="HoritzonalEsquerra";
-      String HoritzonalDreta ="HoritzonalDreta";
-      //Comprobar que la posició que volem mirar està dintre del tauler, forma part de les 4 que volem mirar i no ha incomplert cap restriccio
-      //Restriccions: només pot haver-hi un mateix color o buits, si està buit la de sota no pot estar buida
-      while (col >= 0 && col < colmax && fila >= 0 && fila < colmax && !target && contador < 4) {
-          int coloract=t.getColor(fila, col);
-          if ((coloract != color) && (coloract!=0)) {//si  donde estamos es del rival, nos salimos
-              target = true;
-          }
-          else if (fila > 0 && coloract==0 && t.getColor(fila - 1, col) == 0) {//mira si hay alguna ficha debajo, es para las diagonales y horizontales, si no hay nada salimos
-              target = true;
-          }
-          else if (coloract == color) {
-              ++nostres;
-          }
-          ++contador;
-          if (DiagonalEsquerreAvall.equals(TipusMoviment)){
-            col=col-1;
-            fila=fila-1;
-          }
-          else if (DiagonalEsquerreAmunt.equals(TipusMoviment)){
-            col=col-1;
-            fila=fila+1;
-          }
-          else if (DiagonalDretaAvall.equals(TipusMoviment)){
-            col=col+1;
-            fila=fila-1;
-          }
-          else if (DiagonalDretaAmunt.equals(TipusMoviment)){
-            col=col+1;
-            fila=fila+1;
-          }
-          else if (HoritzonalEsquerra.equals(TipusMoviment)){
-            col=col-1;
-          }
-          else if (HoritzonalDreta.equals(TipusMoviment)){
-            col=col+1;
-          }
-          else{
-            //dades incorrectes
-            target=true;
-            break;
-          }
+      if (num == 1){
+          heu = heu_actual + 100 *(color * color_comp);
       }
-      if (target==true && contador!=4) {
-        //No s'ha complert una restriccio o ha quedat fora del tauler
-          nostres = 0;
+      if (num == 2){
+          heu = heu_actual + 500 *(color * color_comp);
       }
-      return nostres;
-  }
-
-  private float HeuristicaRecorregutVertical(Tauler t, int c, int color, float heur){
-    int coloract=0; //color de la primera posició
-    int seguides=0; //quantes seguides tenim?
-    int fil=0; //fila per saber el color que mirem
-    for (int fila=t.getMida()-1; fila>=0; --fila){
-      int colorpos=t.getColor(fila, c);
-      if(t.getColor(fila, c)!=0){ //si no es 0 començem a comptar
-        if(seguides==0){  //inicialitzem valors
-          coloract=colorpos;
-          fil=fila;   //posteriorment per la heuristica
-          ++seguides;
-        }
-        else if (colorpos!=coloract){
-          heur=calculaheuristica(t, heur, seguides, fil, c, color);
-          return heur;
-        }
-        else{
-          ++seguides;
-        }
+      if (num == 3){
+          heu = heu_actual + 10000 *(color * color_comp);
       }
-      if(seguides>=4){
-        heur=calculaheuristica(t, heur, seguides, fil, c, color);
-
-        return heur;
-      }
-    }
-    return heur;
+      return heu;
   }
 }
-    
