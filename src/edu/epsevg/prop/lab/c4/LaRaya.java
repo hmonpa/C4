@@ -38,7 +38,7 @@ public class LaRaya implements Jugador, IAuto {
              //System.out.println("=========>pintar_first"+i);
              System.out.println("Exploració " + cont);
              cont++;
-             estat2.pintaTaulerALaConsola();
+             //estat2.pintaTaulerALaConsola();
              System.out.println("-----------------");
              valor = min(estat2, depth-1, -player, Integer.MIN_VALUE, Integer.MAX_VALUE, estat2.solucio(i, player));
              //System.out.println("Columna >" + i + " valor heurístic: "+valor);
@@ -109,16 +109,16 @@ public class LaRaya implements Jugador, IAuto {
     int heu_laraya = 0;
     int heu_enemic = 0;
     int num=0;
-    for (int i=0;i<t.getMida();i++){
-        for (int col = 0; col <t.getMida(); ++col) {    // LaRaya
-            if (t.getColor(i, col) == color){
+    for (int i=0; i<t.getMida(); i++){
+        for (int col=0; col<t.getMida(); col++) {    
+            if (t.getColor(i, col) == color){           // LaRaya
                 num = recorre(t,color,i,col);
-                heu_laraya = num_heuristic(num,color,color,heu_laraya,i);
+                heu_laraya += num_heuristic(num,color,color,heu_laraya);
                 return heu_laraya;
             }
             else if(t.getColor(i, col) == -color){      // Adversario
                  num = recorre(t,-color,i,col);
-                 heu_enemic = num_heuristic(num,-color,color,heu_enemic,i);
+                 heu_enemic += num_heuristic(num,-color,color,heu_enemic);
                  return heu_enemic;
             }
         }              
@@ -131,95 +131,98 @@ public class LaRaya implements Jugador, IAuto {
       int seguides_v = 1;
       int seguides_dc = 1;
       int seguides_dd = 1;
+
+  //---------------VERTICAL-----------------------
+      if (Y-1 != -1){                                       // No sale del tablero por abajo
+          if(t.getColor(X, Y-1) != 0){
+              ++seguides_v;
+             /* if (Y-2 != -1){                               
+                    if(t.getColor(X, Y-2) == color){
+                        ++seguides_v;
+                    } 
+               }*/
+          }
+      }
+      if (Y+1 != t.getMida()){                              // No sale del tablero por arriba
+          if(t.getColor(X, Y+1) != 0){
+              ++seguides_v;
+             /* if (Y+2 != t.getMida()){                      
+                    if(t.getColor(X, Y+2) == color){
+                        ++seguides_v;
+                    } 
+               }*/
+          }
+      }
  //---------------HORIZONTAL-------------------
       if (X-1 != -1){                                       // No sale del tablero por la izq.
           if(t.getColor(X-1, Y) == color){
               ++seguides_h;
-              if (X-2 != -1){                               
+              /*if (X-2 != -1){                               
                     if(t.getColor(X-2, Y) == color){
                         ++seguides_h;
                     } 
-               }
+               }*/
           }
       }
       if (X+1 != t.getMida()){                              // No sale del tablero por la der.
           if(t.getColor(X+1, Y) == color){
               ++seguides_h;
-              if (X+2 != t.getMida()){                      
+              /*if (X+2 != t.getMida()){                      
                     if(t.getColor(X+2, Y) == color){
                         ++seguides_h;
                     } 
-               }
+               }*/
           }
       }
- //---------------VERTICAL-----------------------
-      if (Y-1 != -1){                                       // No sale del tablero por abajo
-          if(t.getColor(X, Y-1) == color){
-              ++seguides_v;
-              if (Y-2 != -1){                               
-                    if(t.getColor(X, Y-2) == color){
-                        ++seguides_v;
-                    } 
-               }
-          }
-      }
-      if (Y+1 != t.getMida()){                              // No sale del tablero por arriba
-          if(t.getColor(X, Y+1) == color){
-              ++seguides_v;
-              if (Y+2 != t.getMida()){                      
-                    if(t.getColor(X, Y+2) == color){
-                        ++seguides_v;
-                    } 
-               }
-          }
-      }
+
  //-----------------DIAGONAL_CREIXENT--------------
-       if (X-1 != -1 && Y-1 != -1){                         // No sale del tablero por la diagonal inferior izq.
+      if (X-1 != -1 && Y-1 != -1){                         // No sale del tablero por la diagonal inferior izq.
           if(t.getColor(X-1, Y-1) == color){
               ++seguides_dc;
-              if (X-2 != -1 && Y-2 != -1){              
+              /*if (X-2 != -1 && Y-2 != -1){              
                     if(t.getColor(X-2, Y-2) == color){
                         ++seguides_dc;
                     } 
-               }
+               }*/
           }
       }
       if (X+1 != t.getMida() && Y+1 != t.getMida()){        // No sale del tablero por la diagonal superior der.
           if(t.getColor(X+1, Y+1) == color){
               ++seguides_dc;
-              if (X+2 != t.getMida() && Y+2 != t.getMida()){
+             /* if (X+2 != t.getMida() && Y+2 != t.getMida()){
                     if(t.getColor(X+2, Y+2) == color){
                         ++seguides_dc;
                     } 
-               }
+               }*/
           }
       }
 //--------------------DIAGONAL_DECREIXENT--------------------------
-       if (X-1 != -1 && Y+1 != t.getMida()){                // No sale del tablero por la diagonal inferior der.
+      if (X-1 != -1 && Y+1 != t.getMida()){                // No sale del tablero por la diagonal inferior der.
           if(t.getColor(X-1, Y+1) == color){
               ++seguides_dd;
-              if (X-2 != -1 && Y+2 != t.getMida()){
+              /*if (X-2 != -1 && Y+2 != t.getMida()){
                     if(t.getColor(X-2, Y+2) == color){
                         ++seguides_dd;
                     } 
-               }
+               }*/
           }
       }
       if (X+1 != t.getMida() && Y-1 != -1){                 // No sale del tablero por la diagonal superior izq.
           if(t.getColor(X+1, Y-1) == color){
               ++seguides_dd;
-              if (X+2 != t.getMida() && Y-2 != -1){
+              /*if (X+2 != t.getMida() && Y-2 != -1){
                     if(t.getColor(X+2, Y-2) == color){
                         ++seguides_dd;
                     } 
-               }
+               }*/
           }
       }
     int max = Integer.max(seguides_h,seguides_v);
     max = Integer.max(max,seguides_dc);
     return Integer.max(max,seguides_dd);
   }
-  private int num_heuristic(int num, int color,int color_comp,int heu_actual,int X){
+  
+  private int num_heuristic(int num, int color,int color_comp,int heu_actual){
       
       /*if (X == 0) X = 1;
       if (X == 1) X = 2;
@@ -231,9 +234,12 @@ public class LaRaya implements Jugador, IAuto {
       if (X == 7) X = 1;*/
 
       if (num == 1){
-          heu_actual += heu_actual + 300 *(color * color_comp);
+          heu_actual += heu_actual + 100 *(color * color_comp);
       }
       if (num == 2){
+          heu_actual += heu_actual + 300 *(color * color_comp);
+      }
+      if (num == 3){
           heu_actual += heu_actual + 500 *(color * color_comp);
       }
       if (num == 4){
