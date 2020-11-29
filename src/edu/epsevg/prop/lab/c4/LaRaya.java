@@ -1,5 +1,4 @@
 package edu.epsevg.prop.lab.c4;
-import edu.epsevg.prop.lab.c4.Juga2;
 
 /**
  * Jugador Connecta4 creado con IA
@@ -70,10 +69,6 @@ public class LaRaya implements Jugador, IAuto {
          }
       }
       System.out.println("Jugadas exploradas " + cont);
-      
-      //if(max > 214000000) System.out.println("Columna: " + col + "; Valor heuristic ∞");
-      //else if (max < -214000000) System.out.println("Columna: " + col + "; Valor heuristic -∞");
-      //else 
       System.out.println("Mejor opción:");
       System.out.println("Columna " + col + ". Valor heuristico " + max);
       System.out.println("--------------------------------------");
@@ -91,7 +86,7 @@ public class LaRaya implements Jugador, IAuto {
    */
   private int max(Tauler estat, int depth, int player, int alpha, int beta){
       // Max
-      if (!estat.espotmoure() || depth == 0 ) return heuristica(estat, player);
+      if (!estat.espotmoure() || depth == 0) return heuristica(estat, player);
       for (int i=0;i<estat.getMida();i++){    
           if (estat.movpossible(i)){
               Tauler estat2 = new Tauler(estat);
@@ -164,6 +159,7 @@ public class LaRaya implements Jugador, IAuto {
     }
     return heu_laraya - heu_enemic;
   }
+  
   /** 
    * Realiza recorridos del tablero y cuenta las fichas adyacentes.
    * @param t       (Tablero)
@@ -173,10 +169,10 @@ public class LaRaya implements Jugador, IAuto {
    * @return        SUM(seguides)
    */
   private int recorre(Tauler t, int color, int X, int Y){
-      int seguides_h = 1;
-      int seguides_v = 1;
-      int seguides_dc = 1;
-      int seguides_dd = 1;
+      int seguides_h = 1;       // Seguidas horizontales
+      int seguides_v = 1;       // Seguidas verticales
+      int seguides_dc = 1;      // Seguidas diagonales (crecientes)
+      int seguides_dd = 1;      // Seguidas diagonales (decrecientes)
 
   //--------------------------- Vertical ---------------------------
       if (Y-1 != -1){                                       // No sale del tablero por abajo
