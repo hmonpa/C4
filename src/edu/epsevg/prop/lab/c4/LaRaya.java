@@ -196,29 +196,56 @@ public class LaRaya implements Jugador, IAuto {
           }
       }
  //-------------------------- Horizontal --------------------------
+ // La explicación del funcionamiento del siguiente código y su finalidad, se encuentra en la documentación del proyecto (apartado Recorre)
       if (X-1 != -1){                                       // No sale del tablero por la izq.
           if(t.getColor(X-1, Y) == color){
-              if(Y == 1) seguides_h = seguides_h + 1 * 2;
-              else ++seguides_h;
               if (X-2 != -1){                               
                     if(t.getColor(X-2, Y) == color){
-                        if(Y == 1) seguides_h = seguides_h + 1 * 2;
-                        else ++seguides_h;
-                    } 
+                        if(Y >= 1 && X-3 != -1 && X+1 != t.getMida()){ 
+                            if(t.getColor(X-3, Y) == 0 && t.getColor(X-3, Y-1) == 0 ){//primera condicion de victoria
+                                if(t.getColor(X+1, Y) == 0 && t.getColor(X+1, Y-1) == 0)
+                                    if(color == -1 && X%2 != 0)seguides_h = seguides_h + 1 * 25;
+                                    else if (color == 1 && X%2 == 0)seguides_h = seguides_h + 1 * 25;
+                                    else seguides_h = seguides_h + 1 * 15;
+                                else seguides_h = seguides_h + 1 * 10;
+                            }
+                        }else ++seguides_h;
+                    }else if(t.getColor(X-2, Y) == 0){ //segunda condicion de victoria
+                        if(X-3 != -1 && Y >=1){
+                            if(t.getColor(X-3, Y) == color && t.getColor(X-2, Y-1) == 0){
+                                if(color == -1 && X%2 != 0)seguides_h = seguides_h + 1 * 25;
+                                else if (color == 1 && X%2 == 0)seguides_h = seguides_h + 1 * 25;
+                                else seguides_h = seguides_h + 1 * 15;
+                            }
+                        }
+                    }
                }
-          }
+          }else ++seguides_h;
       }
       if (X+1 != t.getMida()){                              // No sale del tablero por la der.
           if(t.getColor(X+1, Y) == color){
-              if(Y == 1) seguides_h = seguides_h + 1 * 2;
-              else ++seguides_h;
               if (X+2 != t.getMida()){                      
                     if(t.getColor(X+2, Y) == color){
-                        if(Y == 1) seguides_h = seguides_h + 1 * 2;
-                        else ++seguides_h;
+                        if(Y >= 1 && X+3 != t.getMida() && X-1 != -1){
+                            if(t.getColor(X+3, Y) == 0 && t.getColor(X+3, Y-1) == 0 ){                          // Primera condicion de victoria
+                                 if(t.getColor(X-1, Y) == 0 && t.getColor(X-1, Y-1) == 0){
+                                      if(color == -1 && X%2 != 0)seguides_h = seguides_h + 1 * 25;
+                                      else if (color == 1 && X%2 == 0)seguides_h = seguides_h + 1 * 25;
+                                      else seguides_h = seguides_h + 1 * 15;
+                                 }else seguides_h = seguides_h + 1 * 10;
+                             }
+                        }else ++seguides_h;
+                    }else if(t.getColor(X+2, Y) == 0){                                                          // Segunda condicion de victoria
+                        if(X+3 != t.getMida() && Y >=1){
+                            if(t.getColor(X+3, Y) == color && t.getColor(X+2, Y-1) == 0){
+                                if(color == -1 && X%2 != 0)seguides_h = seguides_h + 1 * 25;
+                                else if (color == 1 && X%2 == 0)seguides_h = seguides_h + 1 * 25;
+                                else seguides_h = seguides_h + 1 * 15;
+                            }
+                        }
                     } 
                }
-          }
+          }else ++seguides_h;
       }
 
  //---------------------- Diagonal creciente ----------------------
