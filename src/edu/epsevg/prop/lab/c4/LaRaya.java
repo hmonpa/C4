@@ -1,8 +1,8 @@
 package edu.epsevg.prop.lab.c4;
 import edu.epsevg.prop.lab.c4.Juga2;
 
-
 /**
+ * Jugador Connecta4 creado con IA
  * @author Héctor Montesinos, Alberto López Rey
  */
 
@@ -12,8 +12,7 @@ public class LaRaya implements Jugador, IAuto {
   private int cont;
   
   /**
-   * LaRaya:
-   *    Constructor de nuestro jugador
+   * Constructor de nuestro jugador
    * @param depth 
    */
   public LaRaya(int depth)
@@ -22,19 +21,20 @@ public class LaRaya implements Jugador, IAuto {
     this.depth = depth;
   }
   
-  // nom: 
-  //    Devuelve el nombre del jugador
+  /**
+   * Devuelve el nombre del jugador.
+   * @return nom
+   */
   public String nom()
   {
     return nom;
   }
   
-  /**
-   * moviment: 
-   *    Llama a la función inici_minimax 
+  /** 
+   * Llama a la función inici_minimax.
    * @param t
    * @param color
-   * @return inici_minmax(t,depth,color): Especificación más abajo.
+   * @return inici_minmax(t,depth,color)
    */
   @Override
   public int moviment(Tauler t, int color)
@@ -43,12 +43,11 @@ public class LaRaya implements Jugador, IAuto {
   }
   
   /**
-   * inici_minmax
-   *    Escoge la mejor columna o mejor movimiento, según la mejor h obtenida (llamando a la función min). Devuelve la mejor columna.
+   * Escoge la mejor columna o mejor movimiento, según la mejor h obtenida (llamando a la función min). Devuelve la mejor columna.
    * @param estat   (Tablero)
    * @param depth   (Profundidad)
    * @param player  (Jugador)
-   * @return col
+   * @return col    (Mejor columna)
    */
   private int inici_minmax(Tauler estat, int depth, int player){
       int valor, col = 0;
@@ -68,11 +67,6 @@ public class LaRaya implements Jugador, IAuto {
                max = valor;
                col = i;
              }
-             /*else if(max == valor){
-                if (abs(col-3) > abs(i-3)){
-                    col = i;
-                }
-             }*/
          }
       }
       System.out.println("Jugadas exploradas " + cont);
@@ -87,8 +81,7 @@ public class LaRaya implements Jugador, IAuto {
   }
   
   /**
-   * max:
-   *    Maximiza el valor del estado
+   * Maximiza el valor del estado.
    * @param estat   (Tablero)
    * @param depth   (Profundidad)
    * @param player  (Jugador)
@@ -117,8 +110,7 @@ public class LaRaya implements Jugador, IAuto {
   }
   
   /**
-   * min:
-   *    Minimiza el valor del estado
+   * Minimiza el valor del estado.
    * @param estat   (Tablero)
    * @param depth   (Profundidad)
    * @param player  (Jugador)
@@ -147,41 +139,46 @@ public class LaRaya implements Jugador, IAuto {
   }
   
   /**
-   * Función heuristica:
-   *    Recorre todas las fichas del tablero, dependiendo si el color coincide con uno o con otro
-   *    Este recorrido devuelve el número de fichas seguidas, el cual se le pasa a num_heuristic
-   *    Devuelve el valor heurístico para cada jugador
+   * Recorre todas las fichas del tablero, dependiendo si el color coincide con uno o con otro
+   * Este recorrido devuelve el número de fichas seguidas, el cual se le pasa a num_heuristic
+   * Devuelve la diferencia de los valores heurísticos de ambos jugadores.
    * @param t       (Tablero)
-   * @param color   (Player)
-   * @return  
+   * @param color   (Jugador)
+   * @return        HeurísticaJugador1-HeurísticaJugador2
    */
   private int heuristica (Tauler t, int color){
     int heu_laraya = 0;
     int heu_enemic = 0;
-    int num=0;
+    int num = 0;
     for (int i=0; i<t.getMida(); i++){
         for (int col=0; col<t.getMida(); col++) {    
             if (t.getColor(i, col) == color){           // LaRaya
                 num = recorre(t,color,i,col);
                 heu_laraya += num_heuristic(num,color,color,heu_laraya);
-                //return heu_laraya;
             }
             else if(t.getColor(i, col) == -color){      // Adversario
                  num = recorre(t,-color,i,col);
                  heu_enemic += num_heuristic(num,-color,color,heu_enemic);
-                 //return heu_enemic;
             }
         }              
     }
     return heu_laraya - heu_enemic;
   }
+  /** 
+   * Realiza recorridos del tablero y cuenta las fichas adyacentes.
+   * @param t       (Tablero)
+   * @param color   (Jugador: Positivo = LaRaya / Negativo = Adversario)
+   * @param X       (Fila)
+   * @param Y       (Columna)
+   * @return        SUM(seguides)
+   */
   private int recorre(Tauler t, int color, int X, int Y){
       int seguides_h = 1;
       int seguides_v = 1;
       int seguides_dc = 1;
       int seguides_dd = 1;
 
-  //---------------VERTICAL-----------------------
+  //--------------------------- Vertical ---------------------------
       if (Y-1 != -1){                                       // No sale del tablero por abajo
           if(t.getColor(X, Y-1) != 0){
               ++seguides_v;
@@ -202,7 +199,7 @@ public class LaRaya implements Jugador, IAuto {
               }
           }
       }
- //---------------HORIZONTAL-------------------
+ //-------------------------- Horizontal --------------------------
       if (X-1 != -1){                                       // No sale del tablero por la izq.
           if(t.getColor(X-1, Y) == color){
               if(Y == 1) seguides_h = seguides_h + 1 * 2;
@@ -228,7 +225,7 @@ public class LaRaya implements Jugador, IAuto {
           }
       }
 
- //-----------------DIAGONAL_CREIXENT--------------
+ //---------------------- Diagonal creciente ----------------------
       if (X-1 != -1 && Y-1 != -1){                         // No sale del tablero por la diagonal inferior izq.
           if(t.getColor(X-1, Y-1) == color){
               ++seguides_dc;
@@ -249,7 +246,7 @@ public class LaRaya implements Jugador, IAuto {
                }
           }
       }
-//--------------------DIAGONAL_DECREIXENT--------------------------
+ //--------------------- Diagonal decreciente ---------------------
       if (X-1 != -1 && Y+1 != t.getMida()){                // No sale del tablero por la diagonal inferior der.
           if(t.getColor(X-1, Y+1) == color){
               ++seguides_dd;
@@ -270,11 +267,20 @@ public class LaRaya implements Jugador, IAuto {
                }
           }
       }
+      
     return seguides_v + seguides_h + seguides_dd + seguides_dc;
   }
   
-  private int num_heuristic(int num, int color,int color_comp,int heu_actual){
-      
-      return heu_actual + 100000000 *(color * color_comp) * num ;
+  /**
+   * Calcula el valor heurístico utilizando la siguiente fórmula:
+   *    ValorHeurístico + (-1000) * (Jugador1*Jugador2) * FichasAdyacentes.
+   * @param num         (Fichas adyacentes)
+   * @param color       (Jugador 1)
+   * @param color_comp  (Jugador 2)
+   * @param heu_actual  (Valor heurístico)
+   * @return            Fórmula
+   */
+  private int num_heuristic(int num, int color, int color_comp, int heu_actual){  
+      return heu_actual + (-1000) *(color * color_comp) * num ;
   }
 }
