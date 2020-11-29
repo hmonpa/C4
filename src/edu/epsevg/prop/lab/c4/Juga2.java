@@ -66,6 +66,7 @@ public class Juga2 extends javax.swing.JFrame {
         Xmax = mides.getWidth();
         Step = (int) Xmax / 8;
     }
+
     /**
      * @param args the command line arguments
      */
@@ -94,14 +95,13 @@ public class Juga2 extends javax.swing.JFrame {
         //</editor-fold>
 
         // Definiu al vostre gust els jugadors a enfrontar.
-        Jugador profe = new Profe(8,false);
-        //Jugador aleat = new Aleatori();
-
-        Jugador raya = new LaRaya(8);
         //Jugador manual = new Manual();
+        //Jugador aleat = new Aleatori();
+        Jugador raya = new LaRaya(8);
+        Jugador profe = new Profe(8,false);
 
         boolean autoMode = true;
-        final Juga2 j = new Juga2(profe, raya, autoMode);
+        final Juga2 j = new Juga2(raya, profe, autoMode);
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -383,7 +383,6 @@ public class Juga2 extends javax.swing.JFrame {
     @Override
     public void paint(Graphics g1) {
         super.paint(g1);
-        //System.out.println(">Jugada explorada");
         Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // Anti-alias!
         RenderingHints.VALUE_ANTIALIAS_ON);
